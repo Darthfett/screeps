@@ -1,4 +1,4 @@
-const roles = require('roles');
+const finder = require('finder');
 const _ = require('lodash');
 
 const State = {
@@ -17,7 +17,6 @@ function get_repair_target(creep) {
             return target;
         }
     }
-
     let weak_structures = _.filter(
         creep.room.find(FIND_STRUCTURES),
         (s) => {
@@ -52,7 +51,7 @@ const State_Run = {
         }
 
         // Harvest
-        let source = roles.get_harvest_source(creep);
+        let source = finder.get_harvest_source(creep);
         if (!source) {
             return;
         }

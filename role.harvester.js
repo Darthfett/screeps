@@ -1,4 +1,4 @@
-const roles = require('roles');
+const finder = require('finder');
 const _ = require('lodash');
 
 const State = {
@@ -18,7 +18,7 @@ const State_Run = {
         }
 
         // Harvest
-        let source = roles.get_harvest_source(creep);
+        let source = finder.get_harvest_source(creep);
         if (!source) {
             return;
         }
@@ -27,8 +27,6 @@ const State_Run = {
         }
     },
     [State.TRANSFER]: (creep) => {
-        let spawn = Game.getObjectById(creep.memory.spawn_id);
-        let spawn_room = spawn.room;
         // State Transition
         if (creep.carry.energy <= 0) {
             // TRANSFER => HARVEST
@@ -37,10 +35,12 @@ const State_Run = {
             State_Run[creep.memory.state](creep);
             return;
         }
-        if (spawn.energy < spawn.energyCapacity) {
+
+        let transfer_source = finder.get_transfer_source(creep);
+        if (transfer_source) {
             // Transfer
-            if(creep.transfer(Game.getObjectById(creep.memory.spawn_id), RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(Game.getObjectById(creep.memory.spawn_id));
+            if(creep.transfer(transfer_source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(transfer_source);
             }
         } else {
             // TRANSFER => UPGRADE_ROOM
